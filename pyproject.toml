@@ -1,0 +1,27 @@
+[project]
+name = "clustering-for-ner"
+version = "0.1.0"
+description = "Toolkit for performing clustering analysis on Named Entity Recogning (NER) datasets to identify outliers and potential annotation errors"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "loguru>=0.7.3",
+  "matplotlib>=3.10.6",
+  "pandas>=2.3.3",
+  "scikit-learn>=1.7.2",
+  "typer>=0.23.1",
+  "seqscore>=0.6.0",
+  "umap-learn>=0.5.9.post2",
+  "pydantic>=2.13.4",
+  "openai>=2.45.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.28,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = ["pyqt6>=6.10.2", "pytest>=8.4.2"]
+
+[project.scripts]
+nercluster = "clustering_for_ner:cli"
