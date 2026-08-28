@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The full range allowed by requires-python. The floor is what
+        # downstream consumers pin against; the ceiling is what lets them
+        # move their base image forward.
+        python-version: ["3.12", "3.13", "3.14"]
+
+    env:
+      UV_FROZEN: "1"
+      UV_PYTHON: ${{ matrix.python-version }}
+      # Skip the `dev` group: PyQt6 is only useful for interactive
+      # plotting on a developer's machine. `--group test` adds pytest back.
+      UV_NO_DEFAULT_GROUPS: "1"
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Check the lockfile matches pyproject.toml
+        run: uv lock --check
+
+      - name: Install
+        run: uv sync --group test
+
+      - name: Check the CLI starts
+        run: uv run --group test nercluster --help
+
+      - name: Test
+        run: uv run --group test pytest
