@@ -21,7 +21,11 @@ requires = ["uv_build>=0.11.28,<0.12.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = ["pyqt6>=6.10.2", "pytest>=8.4.2"]
+test = ["pytest>=8.4.2"]
+# PyQt6 only exists to give matplotlib an interactive backend for local
+# use. Tests force the Agg backend, so CI installs `test` alone and skips
+# pulling ~100MB of Qt into every matrix job.
+dev = [{ include-group = "test" }, "pyqt6>=6.10.2"]
 
 [project.scripts]
 nercluster = "clustering_for_ner:cli"
