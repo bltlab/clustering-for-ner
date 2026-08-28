@@ -25,3 +25,12 @@ dev = ["pyqt6>=6.10.2", "pytest>=8.4.2"]
 
 [project.scripts]
 nercluster = "clustering_for_ner:cli"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# So test modules can import shared helpers from tests/conftest.py.
+pythonpath = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+  "integration: exercises a live embedding endpoint; set NERCLUSTER_TEST_BASE_URL to enable",
+]
